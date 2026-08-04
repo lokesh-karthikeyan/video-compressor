@@ -1,0 +1,9 @@
+{
+  "name": "video-compressor",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "devDependencies": {
+    "turbo": "latest",
+    "typescript": "^6.0.3"
+  }
+}
