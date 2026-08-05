@@ -1,0 +1,1 @@
+export { getEnvOrThrowError } from "./env";
