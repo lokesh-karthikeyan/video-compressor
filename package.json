@@ -1,6 +1,12 @@
 {
   "name": "video-compressor",
   "private": true,
+  "devEngines": {
+    "packageManager": {
+      "name": "bun",
+      "version": "1.1.0"
+    }
+  },
   "workspaces": ["apps/*", "packages/*"],
   "devDependencies": {
     "turbo": "latest",
