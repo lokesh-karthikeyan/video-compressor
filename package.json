@@ -11,5 +11,13 @@
   "devDependencies": {
     "turbo": "latest",
     "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "dev:frontend": "bun run --env-file=../../.env --cwd frontend dev",
+    "dev:backend": "bun run --env-file=../../.env --cwd apps/api dev",
+    "dev:worker": "bun run --env-file=../../.env --cwd apps/worker dev",
+    "db:generate": "bun run --env-file=../../.env --cwd packages/database db:generate",
+    "db:migrate": "bun run --env-file=../../.env --cwd packages/database db:migrate",
+    "db:studio": "bun run --env-file=../../.env --cwd packages/database db:studio"
   }
 }
