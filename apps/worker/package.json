@@ -1,0 +1,13 @@
+{
+  "name": "@video-compressor/worker",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@video-compressor/shared": "workspace:*",
+    "amqplib": "^2.0.1"
+  }
+}
