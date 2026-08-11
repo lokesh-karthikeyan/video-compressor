@@ -1,0 +1,25 @@
+{
+  "name": "@video-compressor/api",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@elysia/eden": "^1.4.10",
+    "@elysiajs/bearer": "^1.4.4",
+    "@elysiajs/cors": "^1.4.2",
+    "@elysiajs/jwt": "^1.4.2",
+    "@video-compressor/database": "workspace:*",
+    "@video-compressor/shared": "workspace:*",
+    "elysia": "^1.4.29"
+  }
+}
