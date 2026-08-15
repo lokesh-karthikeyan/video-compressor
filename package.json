@@ -9,8 +9,15 @@
   },
   "workspaces": ["apps/*", "packages/*"],
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.8.1",
+    "eslint-plugin-svelte": "^3.23.0",
+    "prettier": "^3.9.6",
+    "prettier-plugin-svelte": "^4.1.1",
+    "svelte-eslint-parser": "^1.8.1",
     "turbo": "latest",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.67.0"
   },
   "scripts": {
     "dev:frontend": "bun run --env-file=../../.env --cwd apps/web/ dev",
