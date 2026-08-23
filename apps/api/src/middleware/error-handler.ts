@@ -3,6 +3,7 @@ import {
   ErrorCodes,
   type ErrorResponse,
 } from "@video-compressor/shared";
+import { NotFoundError as ElysiaNotFoundError } from "elysia";
 
 export const errorHandler = ({ error }: { error: unknown }): ErrorResponse => {
   if (error instanceof AppError) {
@@ -13,6 +14,14 @@ export const errorHandler = ({ error }: { error: unknown }): ErrorResponse => {
       code,
       message,
       details,
+    };
+  }
+
+  if (error instanceof ElysiaNotFoundError) {
+    return {
+      statusCode: 404,
+      code: ErrorCodes.NOT_FOUND,
+      message: error.message,
     };
   }
 

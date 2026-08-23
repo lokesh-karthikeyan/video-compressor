@@ -1,13 +1,14 @@
 import {
   AuthInvalidCredentialsError,
   AuthUserExistsError,
+  NotFoundError,
+  InternalServerError,
   type AuthUser,
   type LoginRequest,
   type RegisterRequest,
 } from "@video-compressor/shared";
-import { userQueries } from "../../../../../packages/database/src";
+import { userQueries } from "@video-compressor/database";
 import { hashPassword, verifyPassword } from "../../utils";
-import { InternalServerError, NotFoundError } from "elysia";
 
 export const authService = {
   async register(data: RegisterRequest): Promise<{ user: AuthUser }> {
@@ -35,7 +36,7 @@ export const authService = {
     const user = await userQueries.findByEmail(email);
     if (!user) throw new AuthInvalidCredentialsError();
 
-    const isValid = verifyPassword(password, user.passwordHash);
+    const isValid = await verifyPassword(password, user.passwordHash);
     if (!isValid) throw new AuthInvalidCredentialsError();
 
     return { user: { id: user.id, email, name: user.name } };
