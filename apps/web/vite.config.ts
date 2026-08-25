@@ -1,0 +1,23 @@
+import adapter from "@sveltejs/adapter-auto";
+import { sveltekit } from "@sveltejs/kit/vite";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  envDir: "../../",
+  plugins: [
+    sveltekit({
+      compilerOptions: {
+        runes: ({ filename }) =>
+          filename.split(/[/\\]/).includes("node_modules") ? undefined : true,
+      },
+
+      adapter: adapter(),
+    }),
+  ],
+  optimizeDeps: {
+    exclude: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+  },
+  server: {
+    port: 5173,
+  },
+});
