@@ -1,0 +1,12 @@
+node_modules
+**/node_modules
+.git
+.gitignore
+tmp
+**/local.db
+**/*.db
+apps/web/build
+apps/web/.svelte-kit
+infra/garage-data
+.env
+*.log

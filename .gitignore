@@ -9,6 +9,8 @@ build/
 .env.*
 !.env.example
 
+infra/app.env
+
 secrets/*
 !secrets/.gitkeep
 
@@ -19,6 +21,10 @@ volumes/
 database/local.db
 
 .log
+
+tmp/
+
+apps/web/static/ffmpeg/
 
 .DS_Store
 Thumbs.db
