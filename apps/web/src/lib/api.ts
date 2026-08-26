@@ -1,17 +1,11 @@
 import { get } from "svelte/store";
 import { auth } from "$lib";
-import type { AuthResponse, CompressOptions, Video } from "@video-compressor/shared";
+import type { AuthResponse, Video } from "@video-compressor/shared";
+import type { CreateVideoData } from "$lib/types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 if (!API_URL) throw new Error("VITE_API_URL is not set");
-
-type CreateVideoData = {
-  filename: string;
-  fileSize: number;
-  contentType: string;
-  options: CompressOptions;
-};
 
 let refreshInFlight: Promise<boolean> | null = null;
 
