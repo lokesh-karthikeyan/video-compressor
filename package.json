@@ -25,6 +25,18 @@
     "dev:worker": "bun run --env-file=../../.env --cwd apps/worker dev",
     "db:generate": "bun run --env-file=../../.env --cwd packages/database db:generate",
     "db:migrate": "bun run --env-file=../../.env --cwd packages/database db:migrate",
-    "db:studio": "bun run --env-file=../../.env --cwd packages/database db:studio"
+    "db:studio": "bun run --env-file=../../.env --cwd packages/database db:studio",
+    "docker:up": "docker compose -f infra/docker/docker-compose.yml up --build -d",
+    "docker:down": "docker compose -f infra/docker/docker-compose.yml down",
+    "docker:logs": "docker compose -f infra/docker/docker-compose.yml logs -f --tail=100",
+    "docker:ps": "docker compose -f infra/docker/docker-compose.yml ps",
+    "docker:clean": "docker compose -f infra/docker/docker-compose.yml down -v",
+    "test": "bun test tests/unit/shared/",
+    "test:api": "bun test tests/unit/api/ tests/integration/auth.test.ts tests/integration/video.test.ts",
+    "test:worker": "bun test tests/unit/worker/",
+    "test:all": "bun test tests/"
+  },
+  "dependencies": {
+    "@ffmpeg/core": "0.12.6"
   }
 }
