@@ -1,4 +1,4 @@
-import { AuthUnauthorizedError, type AuthUser } from "@video-compressor/shared";
+import { AuthUnauthorizedError, type AuthUser, getEnvOrThrowError } from "@video-compressor/shared";
 import type { AuthResult, SignToken } from "./auth.types";
 
 export const authUtils = {
@@ -32,17 +32,26 @@ export const authUtils = {
 
   async generateTokens(user: AuthUser, signToken: SignToken) {
     const { id, email, name } = user;
-    const accessToken = await signToken({
-      sub: id,
-      email,
-      name,
-      type: "access" as const,
-    });
+    const accessExpiry = getEnvOrThrowError("JWT_EXPIRY");
+    const refreshExpiry = getEnvOrThrowError("JWT_REFRESH_EXPIRY");
 
-    const refreshToken = await signToken({
-      sub: id,
-      type: "refresh" as const,
-    });
+    const accessToken = await signToken(
+      {
+        sub: id,
+        email,
+        name,
+        type: "access" as const,
+      },
+      { exp: accessExpiry },
+    );
+
+    const refreshToken = await signToken(
+      {
+        sub: id,
+        type: "refresh" as const,
+      },
+      { exp: refreshExpiry },
+    );
 
     return { accessToken, refreshToken };
   },

@@ -26,6 +26,7 @@ export type AuthResult = {
 
 export type SignToken = (
   payload: AccessTokenPayload | RefreshTokenPayload,
+  options?: { exp?: string },
 ) => Promise<string>;
 
 export type AuthHandlers = {
