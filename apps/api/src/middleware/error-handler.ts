@@ -3,7 +3,7 @@ import {
   ErrorCodes,
   type ErrorResponse,
 } from "@video-compressor/shared";
-import { NotFoundError as ElysiaNotFoundError } from "elysia";
+import { NotFoundError as ElysiaNotFoundError, ValidationError as ElysiaValidationError } from "elysia";
 
 export const errorHandler = ({ error }: { error: unknown }): ErrorResponse => {
   if (error instanceof AppError) {
@@ -14,6 +14,14 @@ export const errorHandler = ({ error }: { error: unknown }): ErrorResponse => {
       code,
       message,
       details,
+    };
+  }
+
+  if (error instanceof ElysiaValidationError) {
+    return {
+      statusCode: 422,
+      code: ErrorCodes.VALIDATION_ERROR,
+      message: error.message,
     };
   }
 
