@@ -17,3 +17,4 @@ export { InvalidFormatError } from "./invalid-format.error";
 export { ProcessingError } from "./processing.error";
 export { QuotaExceededError } from "./quota-exceeded.error";
 export { InternalServerError } from "./internal-server.error";
+export { StorageError, VideoNotFoundError, VideoNotReadyError } from "./video.error";

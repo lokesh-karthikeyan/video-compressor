@@ -15,6 +15,9 @@ export const ErrorCodes = {
   INVALID_FORMAT: "INVALID_FORMAT",
   PROCESSING_ERROR: "PROCESSING_ERROR",
   TOO_MANY_REQUESTS: "TOO_MANY_REQUESTS",
+  VIDEO_NOT_FOUND: "VIDEO_NOT_FOUND",
+  VIDEO_NOT_READY: "VIDEO_NOT_READY",
+  STORAGE_ERROR: "STORAGE_ERROR",
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
