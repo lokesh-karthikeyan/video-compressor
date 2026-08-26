@@ -1,0 +1,115 @@
+@import "./normalize.css";
+@import "./scroll-bar.css";
+
+:root {
+  --system-ui:
+    system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+
+  --bg: #fdf6f9;
+  --surface: #ffffff;
+  --text: #4a4458;
+  --muted: #8b8499;
+  --primary: #c8b6e2;
+  --primary-strong: #a98fd6;
+  --mint: #b8e0d2;
+  --peach: #ffd6c0;
+  --radius: 0.75rem;
+  --shadow: 0 0.375rem 1.125rem rgba(120, 100, 150, 0.12);
+  --space: 1rem;
+  --toast-info: #cfe0ff;
+  --toast-warning: #ffe0b8;
+  --toast-error: #ffc9c9;
+  --border: #e3dcef;
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Nunito-latin-ext.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/Nunito-latin.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-family: "Nunito", var(--system-ui);
+  font-size: 1rem;
+  line-height: 1.5;
+  background: linear-gradient(160deg, var(--bg), #eef3fb);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0.5rem auto;
+  padding: 1.5rem;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color: var(--text);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--primary-strong);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+input[type="range"] {
+  accent-color: var(--primary-strong);
+  width: 100%;
+}
+
+button {
+  cursor: pointer;
+}
