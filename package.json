@@ -36,7 +36,5 @@
     "test:worker": "bun test tests/unit/worker/",
     "test:all": "bun test tests/"
   },
-  "dependencies": {
-    "@ffmpeg/core": "0.12.6"
-  }
+  "dependencies": {}
 }

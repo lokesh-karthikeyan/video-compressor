@@ -3,9 +3,6 @@
   "workspaces": {
     "": {
       "name": "video-compressor",
-      "dependencies": {
-        "@ffmpeg/core": "0.12.6",
-      },
       "devDependencies": {
         "@eslint/js": "^10.0.1",
         "eslint": "^10.8.1",
@@ -38,7 +35,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@elysiajs/eden": "^1.4.4",
-        "@ffmpeg/core-mt": "0.12.6",
+        "@ffmpeg/core": "0.12.6",
         "@ffmpeg/ffmpeg": "0.12.10",
         "@ffmpeg/util": "0.12.1",
         "@video-compressor/api": "workspace:*",
@@ -208,8 +205,6 @@
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.7.2", "", { "dependencies": { "@eslint/core": "^1.2.1", "levn": "^0.4.1" } }, "sha512-+CNAzxglkrpNf/kKywqQfk74QjtceuOE7Qm+AF8miRvPF/wmmK5+OJOgVh3AVTT3RP2mH3+FOaxlE5v72owk0A=="],
 
     "@ffmpeg/core": ["@ffmpeg/core@0.12.6", "", {}, "sha512-PrjWBTfGn2WVn9T7wGnzfFwChbqWeZc7tM9vvJZVRadYFUDakfzy7W0LpYC0cvvK0xT82qlBsk38lQhJ/Hps5A=="],
-
-    "@ffmpeg/core-mt": ["@ffmpeg/core-mt@0.12.6", "", {}, "sha512-f7wrOeUk24VFRi2Gfsp/mwwkK1hbDV0ajgm2fOU/oRi+IDullyzAYdHOagAWfpSZXcTPAGZ1Ild7HmBwr3k2tg=="],
 
     "@ffmpeg/ffmpeg": ["@ffmpeg/ffmpeg@0.12.10", "", { "dependencies": { "@ffmpeg/types": "^0.12.2" } }, "sha512-lVtk8PW8e+NUzGZhPTWj2P1J4/NyuCrbDD3O9IGpSeLYtUZKBqZO8CNj1WYGghep/MXoM8e1qVY1GztTkf8YYQ=="],
 

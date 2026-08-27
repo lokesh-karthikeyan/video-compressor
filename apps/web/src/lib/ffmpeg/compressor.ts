@@ -1,4 +1,4 @@
-import { computeVideoBitrateKbps } from "@video-compressor/shared";
+import { computeVideoBitrateKbps } from "@video-compressor/shared/src/utils/compression";
 import type { CompressOptions } from "$lib/types";
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile } from "@ffmpeg/util";
@@ -6,6 +6,9 @@ import { fetchFile } from "@ffmpeg/util";
 let instance: FFmpeg | null = null;
 let loading: Promise<FFmpeg> | null = null;
 let progressCb: ((p: number) => void) | undefined;
+
+let durationSec = 0;
+let phase: 0 | 1 | 2 = 0;
 
 async function getFFmpeg(): Promise<FFmpeg> {
   if (instance) return instance;
@@ -35,6 +38,8 @@ export function resetFFmpeg(): void {
     instance = null;
     loading = null;
   }
+  durationSec = 0;
+  phase = 0;
 }
 
 async function probeDuration(ffmpeg: FFmpeg, inputFile: string): Promise<number> {
@@ -95,6 +100,7 @@ async function compressTwoPass(
   if (opts.start) shared.push("-ss", opts.start);
   if (opts.end) shared.push("-to", opts.end);
 
+  phase = 1;
   await ffmpeg.exec(
     [
       ...shared,
@@ -116,6 +122,7 @@ async function compressTwoPass(
   );
 
   try {
+    phase = 2;
     await ffmpeg.exec(
       [
         ...shared,
@@ -185,31 +192,63 @@ export async function compressVideo(
   signal?: AbortSignal,
 ): Promise<Blob> {
   progressCb = onProgress;
-
+  durationSec = 0;
+  phase = 0;
   let fallbackProgress = 0;
+  let realProgressReceived = false;
+
+  const markReal = () => {
+    realProgressReceived = true;
+    clearInterval(timer);
+  };
+
+  const reportTime = (elapsed: number) => {
+    if (durationSec <= 0) return;
+    const ratio = Math.min(1, elapsed / durationSec);
+    const scaled = phase === 1 ? ratio * 0.5 : phase === 2 ? 0.5 + ratio * 0.5 : ratio;
+    markReal();
+    progressCb?.(Math.min(0.99, scaled));
+  };
+
   const timer = setInterval(() => {
-    fallbackProgress = Math.min(0.95, fallbackProgress + 0.005);
+    if (realProgressReceived) return;
+    fallbackProgress = Math.min(0.9, fallbackProgress + 0.005);
     progressCb?.(fallbackProgress);
   }, 500);
+
+  const onLog = ({ message }: { message: string }) => {
+    const match = message.match(/time=(\d+):(\d+):(\d+(?:\.\d+)?)/);
+    if (match) reportTime(+match[1] * 3600 + +match[2] * 60 + parseFloat(match[3]));
+  };
+
+  const onProgressEvent = ({ progress }: { progress: number }) => {
+    if (Number.isFinite(progress) && progress > 0 && !realProgressReceived) {
+      markReal();
+      progressCb?.(Math.min(0.99, progress));
+    }
+  };
 
   try {
     const ffmpeg = await getFFmpeg();
     const input = "input.mp4";
     const output = "output.mp4";
 
+    ffmpeg.on("log", onLog);
+    ffmpeg.on("progress", onProgressEvent);
+
     await ffmpeg.writeFile(input, await fetchFile(file));
 
-    if (opts.targetSizeBytes) {
-      const duration = await probeDuration(ffmpeg, input);
-      if (duration > 0) {
-        await compressTwoPass(ffmpeg, input, output, opts, duration, signal);
-      } else {
-        await ffmpeg.exec(buildCrfArgs(input, output, opts), undefined, { signal });
-      }
+    const duration = await probeDuration(ffmpeg, input);
+    durationSec = duration > 0 ? duration : 0;
+
+    if (opts.targetSizeBytes && durationSec > 0) {
+      await compressTwoPass(ffmpeg, input, output, opts, durationSec, signal);
     } else {
       await ffmpeg.exec(buildCrfArgs(input, output, opts), undefined, { signal });
     }
 
+    ffmpeg.off("log", onLog);
+    ffmpeg.off("progress", onProgressEvent);
     const data = (await ffmpeg.readFile(output)) as Uint8Array;
     const buffer = new ArrayBuffer(data.byteLength);
     new Uint8Array(buffer).set(data);

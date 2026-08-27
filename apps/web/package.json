@@ -8,13 +8,13 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
-    "postinstall": "mkdir -p static/ffmpeg && cp ../../node_modules/@ffmpeg/core/dist/esm/* static/ffmpeg/",
+    "postinstall": "rm -rf static/ffmpeg && mkdir -p static/ffmpeg && cp ../../node_modules/@ffmpeg/core/dist/esm/* static/ffmpeg/",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "dependencies": {
     "@elysiajs/eden": "^1.4.4",
-    "@ffmpeg/core-mt": "0.12.6",
+    "@ffmpeg/core": "0.12.6",
     "@ffmpeg/ffmpeg": "0.12.10",
     "@ffmpeg/util": "0.12.1",
     "@video-compressor/api": "workspace:*",
