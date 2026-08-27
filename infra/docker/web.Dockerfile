@@ -13,7 +13,7 @@ COPY apps/web ./apps/web
 COPY apps/api ./apps/api
 COPY packages ./packages
 COPY tsconfig.json ./
-RUN mkdir -p apps/web/static/ffmpeg && cp node_modules/@ffmpeg/core-mt/dist/esm/* apps/web/static/ffmpeg/
+RUN mkdir -p apps/web/static/ffmpeg && cp node_modules/@ffmpeg/core/dist/esm/* apps/web/static/ffmpeg/
 
 ARG VITE_API_URL=http://localhost:5173/api
 ENV VITE_API_URL=$VITE_API_URL

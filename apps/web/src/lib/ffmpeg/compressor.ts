@@ -63,15 +63,7 @@ async function probeDuration(ffmpeg: FFmpeg, inputFile: string): Promise<number>
   return +match[1] * 3600 + +match[2] * 60 + parseFloat(match[3]);
 }
 
-async function deleteFileQuietly(ffmpeg: FFmpeg, path: string): Promise<void> {
-  try {
-    await ffmpeg.deleteFile(path);
-  } catch {
-    // file may not exist (e.g. mbtree disabled)
-  }
-}
-
-async function compressTwoPass(
+async function compressTargetSize(
   ffmpeg: FFmpeg,
   input: string,
   output: string,
@@ -80,11 +72,9 @@ async function compressTwoPass(
   signal?: AbortSignal,
 ): Promise<void> {
   const { videoKbps, audioBps } = computeVideoBitrateKbps(opts.targetSizeBytes!, duration);
-  const passTmp = "pass1.tmp.mp4";
-  const passLog = "passlog";
   const audioKbps = Math.round(audioBps / 1000);
 
-  const shared = ["-i", input];
+  const args = ["-i", input];
   const filters: string[] = [];
 
   if (opts.crop && opts.crop.w > 0 && opts.crop.h > 0) {
@@ -96,59 +86,29 @@ async function compressTwoPass(
       `scale=w='if(gt(iw,ih),-2,${max})':h='if(gt(iw,ih),${max},-2)':force_original_aspect_ratio=decrease`,
     );
   }
-  if (filters.length) shared.push("-vf", filters.join(","));
-  if (opts.start) shared.push("-ss", opts.start);
-  if (opts.end) shared.push("-to", opts.end);
+  if (filters.length) args.push("-vf", filters.join(","));
+  if (opts.start) args.push("-ss", opts.start);
+  if (opts.end) args.push("-to", opts.end);
 
-  phase = 1;
-  await ffmpeg.exec(
-    [
-      ...shared,
-      "-c:v",
-      "libx264",
-      "-b:v",
-      `${videoKbps}k`,
-      "-preset",
-      "ultrafast",
-      "-pass",
-      "1",
-      "-passlogfile",
-      passLog,
-      "-an",
-      passTmp,
-    ],
-    undefined,
-    { signal },
+  args.push(
+    "-c:v",
+    "libx264",
+    "-b:v",
+    `${videoKbps}k`,
+    "-maxrate",
+    `${videoKbps}k`,
+    "-bufsize",
+    `${videoKbps * 2}k`,
+    "-preset",
+    "ultrafast",
+    "-c:a",
+    "aac",
+    "-b:a",
+    `${audioKbps}k`,
+    output,
   );
 
-  try {
-    phase = 2;
-    await ffmpeg.exec(
-      [
-        ...shared,
-        "-c:v",
-        "libx264",
-        "-b:v",
-        `${videoKbps}k`,
-        "-preset",
-        "ultrafast",
-        "-pass",
-        "2",
-        "-passlogfile",
-        passLog,
-        "-c:a",
-        "aac",
-        "-b:a",
-        `${audioKbps}k`,
-        output,
-      ],
-      undefined,
-      { signal },
-    );
-  } finally {
-    await deleteFileQuietly(ffmpeg, `${passLog}-0.log`);
-    await deleteFileQuietly(ffmpeg, `${passLog}-0.log.mbtree`);
-  }
+  await ffmpeg.exec(args, undefined, { signal });
 }
 
 function buildCrfArgs(input: string, output: string, opts: CompressOptions): string[] {
@@ -242,7 +202,7 @@ export async function compressVideo(
     durationSec = duration > 0 ? duration : 0;
 
     if (opts.targetSizeBytes && durationSec > 0) {
-      await compressTwoPass(ffmpeg, input, output, opts, durationSec, signal);
+      await compressTargetSize(ffmpeg, input, output, opts, durationSec, signal);
     } else {
       await ffmpeg.exec(buildCrfArgs(input, output, opts), undefined, { signal });
     }
@@ -255,7 +215,6 @@ export async function compressVideo(
 
     await ffmpeg.deleteFile(input);
     await ffmpeg.deleteFile(output);
-    await deleteFileQuietly(ffmpeg, "pass1.tmp.mp4");
 
     return new Blob([buffer], { type: "video/mp4" });
   } catch (error) {
