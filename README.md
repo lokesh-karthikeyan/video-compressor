@@ -11,6 +11,14 @@ Web-based video compression tool with server-side processing via RabbitMQ and Ga
 - Real-time progress tracking via polling
 - JWT authentication with access/refresh tokens
 
+## Demo
+
+
+
+https://github.com/user-attachments/assets/28889414-e5ec-455a-91cd-8f50e0980373
+
+
+
 ## Prerequisites
 
 - [Bun](https://bun.sh) 1.1+
